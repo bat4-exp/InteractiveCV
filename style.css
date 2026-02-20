@@ -37,15 +37,58 @@ body { display: flex; flex-direction: column; align-items: center; min-height: 1
 @media (min-width: 993px) {
   .new-map-widget { flex: 1 1 auto; }
 }
+
+/* Tablet & phone: consistent spacing and layout (desktop unchanged) */
 @media (max-width: 992px) {
-  .main-grid { align-items: start; }
+  body { overflow-x: hidden; }
+  .page-container { max-width: 100%; }
+  .main-grid { align-items: start; gap: 1.5rem; }
   .left-column, #ink8v8, .right-column { height: auto; }
-  .new-map-widget { min-height: 280px; flex: none; }
+  .page-container { padding: 1.5rem 1.25rem 2rem; }
+  .header-section { margin-bottom: 1.5rem; }
+  .header-top-row { flex-wrap: wrap; gap: 0.75rem; }
+  .photo-banner { padding: 1rem; }
+  .banner-grid { gap: 1rem; }
+  .banner-textbox-wrapper { width: 100%; padding-top: 0.75rem; }
+  .banner-textbox { padding: 0.75rem 1rem; }
+  .new-map-widget { width: 100%; min-width: 0; min-height: 280px; flex: none; padding: 1rem; margin: 0; }
   .new-map-embed { min-height: 220px; }
-  .chat-messages { height: 380px; flex: 0 0 auto; overflow-y: auto; }
+  .central-chat-widget { padding: 1.25rem; margin: 0; }
+  .chat-messages { height: 380px; flex: 0 0 auto; overflow-y: auto; margin-top: 0.75rem; }
+  .central-chat-widget .chat-form { margin-top: 0.75rem; }
+  .right-column { gap: 1.5rem; }
+  #ibq7t.widget-skills { padding: 1.25rem; }
+  .widget-eq { min-height: 280px; }
+  .spotify-player-wrap { margin-top: 0; }
 }
+
 @media (max-width: 480px) {
-  .page-container { padding: 1.5rem 1rem 2rem; }
-  .main-grid { gap: 1.5rem; }
-  .new-map-widget { min-height: 240px; }
+  body { overflow-x: hidden; }
+  .page-container { padding: 1.25rem 1rem 1.5rem; max-width: 100%; }
+  .main-grid { gap: 1.25rem; }
+  .header-section { margin-bottom: 1.25rem; }
+  .header-actions { flex-wrap: wrap; gap: 0.5rem; }
+  .action-button-download, .action-button-link { padding: 0.5rem 0.75rem; font-size: 0.8125rem; }
+  .photo-banner { padding: 0.75rem 1rem; }
+  .banner-grid { gap: 0.75rem; }
+  .profile-block { gap: 1rem; }
+  .avatar-frame { width: 5rem; height: 5rem; }
+  .profile-name { font-size: 1.75rem; }
+  .banner-textbox { padding: 0.75rem; }
+  .intro-text { font-size: 0.8125rem; }
+  .new-map-widget { min-height: 240px; padding: 0.75rem; }
+  .new-map-embed { min-height: 200px; }
+  .new-map-footer { font-size: 0.8125rem; }
+  .central-chat-widget { padding: 1rem; }
+  .chat-header { margin-bottom: 0.75rem; }
+  .chat-messages { height: 320px; margin-top: 0.5rem; }
+  .chat-form { gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+  .chat-input-wrapper { padding: 0.5rem 0.75rem; }
+  .chat-send-button { padding: 0.5rem 0.75rem; }
+  #ibq7t.widget-skills { padding: 1rem; }
+  .widget-title { font-size: 1.125rem; }
+  .skills-grid { gap: 0.5rem; }
+  .skill-item { padding: 0.5rem 0.75rem; min-height: auto; }
+  .widget-eq { min-height: auto; }
+  .spotify-player-wrap .ft-frame { height: 140px; }
 }
