@@ -1,0 +1,20 @@
+# Vercel ignore file
+# Only deploy what's needed for the API functions
+
+# Local development files
+server.ts
+
+# Documentation
+DEPLOYMENT.md
+README.md
+
+# Git
+.git
+.gitignore
+
+# Environment files (should be in Vercel dashboard, not in code)
+.env
+.env.local
+.env.*.local
+
+# Note: api/ folder MUST be included (don't ignore it)
