@@ -9,14 +9,17 @@ const API_CONFIG = {
   // Leave empty string for local development (uses relative /api/chat)
   VERCEL_API_URL: 'https://interactive-cv-eosin.vercel.app', // Set this in your GitHub Pages environment or build process
   
-  // For local development, this will use relative path
-  // For production, this will use the VERCEL_API_URL
+  // When the page is on the same origin as the API (e.g. live on Vercel), use relative path.
+  // When the page is elsewhere (e.g. GitHub Pages or local dashboard), use full VERCEL_API_URL.
   getApiUrl: function() {
-    // If VERCEL_API_URL is set, use it
-    if (this.VERCEL_API_URL) {
-      return `${this.VERCEL_API_URL}/api/chat`;
+    const base = this.VERCEL_API_URL || '';
+    if (typeof window !== 'undefined' && window.location?.origin && base) {
+      try {
+        const apiOrigin = new URL(base).origin;
+        if (window.location.origin === apiOrigin) return '/api/chat';
+      } catch (_) {}
     }
-    // Otherwise use relative path (works for local dev or if API is on same domain)
+    if (base) return base.replace(/\/$/, '') + '/api/chat';
     return '/api/chat';
   }
 };
