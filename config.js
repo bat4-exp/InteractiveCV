@@ -7,7 +7,7 @@ const API_CONFIG = {
   // Set this to your Vercel Function URL when deploying to GitHub Pages
   // Example: 'https://your-project.vercel.app'
   // Leave empty string for local development (uses relative /api/chat)
-  VERCEL_API_URL: '', // Set this in your GitHub Pages environment or build process
+  VERCEL_API_URL: 'https://interactive-cv-eosin.vercel.app', // Set this in your GitHub Pages environment or build process
   
   // For local development, this will use relative path
   // For production, this will use the VERCEL_API_URL
