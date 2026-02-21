@@ -57,7 +57,7 @@ async function appendProductionAnalytics(payload: { ts: string; messageCount: nu
   }
 }
 
-/** Track chat interaction: log, optional webhook, and append to production blob for dashboard. */
+/** Track chat interaction: log, optional webhook, and append to production blob when token is set. */
 function trackChatInteraction(req: VercelRequest, messageCount: number): void {
   const country = (req.headers['x-vercel-ip-country'] as string) || undefined;
   const region = (req.headers['x-vercel-ip-country-region'] as string) || undefined;
@@ -70,7 +70,9 @@ function trackChatInteraction(req: VercelRequest, messageCount: number): void {
     ip: ip ? `${ip.slice(0, 7)}…` : undefined,
   };
   console.log('[chat-analytics]', JSON.stringify(payload));
-  appendProductionAnalytics(payload).catch(() => {});
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    appendProductionAnalytics(payload).catch(() => {});
+  }
   const webhook = process.env.CHAT_ANALYTICS_WEBHOOK_URL;
   if (webhook) {
     fetch(webhook, {
