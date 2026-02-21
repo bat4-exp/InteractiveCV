@@ -63,7 +63,6 @@ body { display: flex; flex-direction: column; align-items: center; min-height: 1
   #iackp { order: 3; width: 100%; min-width: 0; height: auto; grid-area: unset; }
   #ink8v8 { order: 1; width: 100%; min-width: 0; height: auto; margin: 0; padding: 1.25rem; grid-area: unset; align-self: stretch; }
   #ie36dd { order: 2; width: 100%; min-width: 0; height: auto; padding: 0; margin: 0; grid-area: unset; }
-  #idpyca { grid-area: unset; display: none; }
   .left-column, .right-column { height: auto; }
   #i841d3 { margin: 0; }
   .new-map-widget { width: 100%; min-width: 0; min-height: 280px; height: auto; flex: none; padding: 1rem; margin: 0; }

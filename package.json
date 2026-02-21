@@ -12,7 +12,6 @@
   "packageManager": "pnpm@10.30.0",
   "dependencies": {
     "@ai-sdk/openai": "^2.0.0",
-    "@vercel/blob": "^2.3.0",
     "@vercel/node": "^3.0.0",
     "ai": "^6.0.94",
     "dotenv": "^17.3.1",

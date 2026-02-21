@@ -9,6 +9,7 @@ Use this document as the only source of truth. The chatbot must only answer from
 - **Name:** Bram Admiraal
 - **Title:** AI Chatbot Specialist (Generative AI Chatbot Specialist)
 - **Location:** Sofia, Bulgaria (Central/Eastern Europe). Remote-ready.
+- **Additional details:** Born on 01.10.1997 in Hengelo, Netherlands.
 - **Short intro:** I am a Generative AI Chatbot Specialist focused on designing, structuring, and optimizing AI-driven conversational systems. My core objective is to ensure chatbots deliver accurate, compliant, and customer-centric interactions that align with business goals and operational standards. I operate at the intersection of AI capability, business policy, and real-world customer behavior. My work translates complex organizational processes into structured AI logic that is scalable, measurable, and continuously improving.
 
 ## Skills
@@ -122,6 +123,8 @@ English (Fluent)
 Additional Notes:
 Open to side projects and initiatives involving AI, chatbot design, or conversational systems.
 Enjoys live events, concerts, and exploring new experiences outside of work.
+
+In his Free time, Bram likes to build custom wacthes as a hobby.
 
 ---
 
