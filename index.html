@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="./style.css">
   <script src="./config.js"></script>
+  <script src="https://interactieve-cv.admiraal-automations.com/genny-chat.js"></script>
   </head>
   <body class="gjs-t-body body"><div id="iq51f" class="page-container"><header class="header-section"><div class="header-top-row"><div class="brand-row"><div class="brand-indicator"></div><h1 class="gjs-t-h2 brand-title">Interactive CV</h1></div><div class="header-actions"><a href="Bram_Admiraal_CV.pdf" download="Bram_Admiraal_CV.pdf" class="gjs-t-button action-button-download"><img alt="Download Icon" width="18" height="18" src="https://api.iconify.design/lucide-download.svg?color=%230b0f12"/><span>Download PDF</span></a><a href="https://www.linkedin.com/in/bramadmiraal/" target="_blank" rel="noopener" class="action-button-link"><img alt="Link Icon" width="18" height="18" src="https://api.iconify.design/lucide-external-link.svg?color=%23fde047"/><span id="iktph">LinkedIn</span></a></div></div><div id="i06xd" class="gjs-t-border photo-banner"><div class="banner-grid"><div class="profile-block"><div class="avatar-wrapper"><div class="avatar-frame"><img src="1754989112497.png" alt="Profile picture" class="avatar-image"/></div></div><div class="profile-text"><h2 id="iceyy" class="gjs-t-h1 profile-name">Bram Admiraal</h2><div class="profile-tags"><span id="ilevj" class="tag-item">AI Chatbot Specialist</span><span class="tag-item">Remote-ready</span></div><div id="i94n8" class="profile-meta"><div class="profile-meta-item"><img alt="Location Icon" width="16" height="16" src="https://api.iconify.design/lucide-map-pin.svg?color=%23ffffff"/><span id="i10dp">Sofia, BG</span></div><div class="profile-meta-item"></div></div></div></div><div class="banner-textbox-wrapper"><div class="gjs-t-border banner-textbox"><div class="intro-row"><img alt="Message Icon" width="18" height="18" src="https://api.iconify.design/lucide-message-circle.svg?color=%23fde047" class="intro-icon"/><p id="itzr3" class="intro-text">I work as a Generative AI Chatbot Specialist, focusing on conversation design, playbooks, and knowledge structures that enable chatbots to deliver accurate, compliant, and customer-centric interactions.</p></div></div></div></div></div></header><main id="i62ek" class="main-grid"><section id="iackp" class="left-column"><div id="i841d3" class="gjs-t-border new-map-widget"><div class="new-map-header"><div class="new-map-title-wrap"><img src="https://api.iconify.design/lucide-map-pin.svg?color=%23fde047&amp;width=18&amp;height=18" alt="Map pin icon" width="18" height="18"/><h3 class="gjs-t-h2">Location</h3></div><a href="https://www.google.com/maps/search/?api=1&amp;query=Sofia%2C+Bulgaria" target="_blank" rel="noopener" aria-label="Open Sofia, Bulgaria in Google Maps" id="iqgubc" class="action-button-link"><img src="https://api.iconify.design/lucide-external-link.svg?color=%23fde047&amp;width=18&amp;height=18" alt="" width="18" height="18" aria-hidden="true"/>
         Open in Maps
@@ -19,7 +20,9 @@
       const messagesEl = document.getElementById('chatMessages');
       const clearBtn = document.getElementById('ihp1os');
       const PROACTIVE_MSG = "Hello, I'm Bram's virtual AI assistant. Ask me anything about his work experience, skills, certificate or contact details.";
-      let chatHistory = [];
+      const baseUrl = window.GENNY_CONFIG?.BASE_URL || 'https://interactieve-cv.admiraal-automations.com';
+      const chat = GennyChat.create({ baseUrl: baseUrl });
+      let showProactiveIfEmpty = true;
 
       function addMessage(text, side='right'){
         const wrapper = document.createElement('div');
@@ -50,115 +53,61 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
-      function addAssistantBubbleForStream(){
-        const wrapper = document.createElement('div');
-        wrapper.className = 'message-row';
-        const avatar = document.createElement('div');
-        avatar.className = 'message-avatar';
-        avatar.textContent = 'A';
-        wrapper.appendChild(avatar);
-        const bubbleWrap = document.createElement('div');
-        bubbleWrap.className = 'message-bubble-wrapper';
-        const bubble = document.createElement('div');
-        bubble.className = 'message-bubble';
-        const p = document.createElement('p');
-        p.className = 'message-text';
-        p.textContent = '…';
-        bubble.appendChild(p);
-        const timeSpan = document.createElement('span');
-        timeSpan.className = 'message-time';
-        bubbleWrap.appendChild(bubble);
-        bubbleWrap.appendChild(timeSpan);
-        wrapper.appendChild(bubbleWrap);
-        messagesEl.appendChild(wrapper);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-        return { p, timeSpan };
-      }
-
-      async function streamReply(){
-        const { p, timeSpan } = addAssistantBubbleForStream();
-        let full = '';
-        try {
-          const apiUrl = window.API_CONFIG?.getApiUrl() || '/api/chat';
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: chatHistory })
-          });
-          if (!response.ok) {
-            let errMsg = 'Something went wrong. Please try again.';
-            try {
-              const errBody = await response.text();
-              if (errBody) errMsg = 'Server error (' + response.status + '). Please try again.';
-            } catch (_) {}
-            p.textContent = errMsg;
-            timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            return;
+      function renderMessages(messages){
+        messagesEl.innerHTML = '';
+        if (!messages.length) {
+          if (showProactiveIfEmpty) addMessage(PROACTIVE_MSG, 'left');
+          return;
+        }
+        showProactiveIfEmpty = false;
+        for (let i = 0; i < messages.length; i++) {
+          const msg = messages[i];
+          const isLast = i === messages.length - 1;
+          if (msg.role === 'user') {
+            addMessage(msg.content, 'right');
+          } else if (msg.role === 'assistant') {
+            const streaming = isLast && !msg.content;
+            addMessage(msg.content || (streaming ? '…' : ''), 'left');
           }
-          if (!response.body) {
-            p.textContent = 'No response body. Please try again.';
-            timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            return;
-          }
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let buffer = '';
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const data = line.slice(6).trim();
-                if (data === '[DONE]') continue;
-                try {
-                  const obj = JSON.parse(data);
-                  if (obj.error) { p.textContent = obj.error; timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); return; }
-                  if (obj.text) { full += obj.text; p.textContent = full; messagesEl.scrollTop = messagesEl.scrollHeight; }
-                } catch (_) {}
-              }
-            }
-          }
-          if (buffer.startsWith('data: ')) {
-            const data = buffer.slice(6).trim();
-            if (data !== '[DONE]') {
-              try {
-                const obj = JSON.parse(data);
-                if (obj.text) full += obj.text;
-              } catch (_) {}
-              p.textContent = full;
-            }
-          }
-          timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          chatHistory.push({ role: 'assistant', content: full });
-        } catch (err) {
-          const msg = err && typeof err.message === 'string' ? err.message : 'Network error. Please try again.';
-          p.textContent = msg.indexOf('fetch') !== -1 ? 'Network error. Please try again.' : msg;
-          timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
       }
 
-      form.addEventListener('submit', function(e){
+      chat.onMessages(function(messages){
+        if (!messages.length) {
+          if (!showProactiveIfEmpty) messagesEl.innerHTML = '';
+          return;
+        }
+        showProactiveIfEmpty = false;
+        renderMessages(messages);
+      });
+
+      addMessage(PROACTIVE_MSG, 'left');
+      chat.start({ channel: 'embedded_widget' }).catch(function(){
+        showProactiveIfEmpty = true;
+      });
+
+      form.addEventListener('submit', async function(e){
         e.preventDefault();
         const val = (input.value || '').trim();
         if(!val) return;
-        addMessage(val, 'right');
-        chatHistory.push({ role: 'user', content: val });
         input.value = '';
-        streamReply();
+        showProactiveIfEmpty = false;
+        try {
+          await chat.send(val, { channel: 'embedded_widget' });
+        } catch (err) {
+          const msg = err && typeof err.message === 'string' ? err.message : 'Something went wrong. Please try again.';
+          addMessage(msg.indexOf('fetch') !== -1 ? 'Network error. Please try again.' : msg, 'left');
+        }
       });
 
       if (clearBtn) {
         clearBtn.addEventListener('click', function(){
-          chatHistory = [];
-          while(messagesEl.firstChild) messagesEl.removeChild(messagesEl.firstChild);
+          chat.clear();
+          showProactiveIfEmpty = true;
+          messagesEl.innerHTML = '';
           addMessage(PROACTIVE_MSG, 'left');
         });
       }
-
-      addMessage(PROACTIVE_MSG, 'left');
     })();
   </script>
 </body>
