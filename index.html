@@ -19,10 +19,8 @@
       const input = document.getElementById('chatInput');
       const messagesEl = document.getElementById('chatMessages');
       const clearBtn = document.getElementById('ihp1os');
-      const PROACTIVE_MSG = "Hello, I'm Bram's virtual AI assistant. Ask me anything about his work experience, skills, certificate or contact details.";
       const baseUrl = window.GENNY_CONFIG?.BASE_URL || 'https://interactieve-cv.admiraal-automations.com';
       const chat = GennyChat.create({ baseUrl: baseUrl });
-      let showProactiveIfEmpty = true;
 
       function addMessage(text, side='right'){
         const wrapper = document.createElement('div');
@@ -55,11 +53,7 @@
 
       function renderMessages(messages){
         messagesEl.innerHTML = '';
-        if (!messages.length) {
-          if (showProactiveIfEmpty) addMessage(PROACTIVE_MSG, 'left');
-          return;
-        }
-        showProactiveIfEmpty = false;
+        if (!messages.length) return;
         for (let i = 0; i < messages.length; i++) {
           const msg = messages[i];
           const isLast = i === messages.length - 1;
@@ -73,17 +67,13 @@
       }
 
       chat.onMessages(function(messages){
-        if (!messages.length) {
-          if (!showProactiveIfEmpty) messagesEl.innerHTML = '';
-          return;
-        }
-        showProactiveIfEmpty = false;
         renderMessages(messages);
       });
 
-      addMessage(PROACTIVE_MSG, 'left');
-      chat.start({ channel: 'embedded_widget' }).catch(function(){
-        showProactiveIfEmpty = true;
+      chat.start({ channel: 'embedded_widget' }).then(function(){
+        renderMessages(chat.getMessages());
+      }).catch(function(){
+        addMessage('Could not start chat. Please refresh the page.', 'left');
       });
 
       form.addEventListener('submit', async function(e){
@@ -91,7 +81,6 @@
         const val = (input.value || '').trim();
         if(!val) return;
         input.value = '';
-        showProactiveIfEmpty = false;
         try {
           await chat.send(val, { channel: 'embedded_widget' });
         } catch (err) {
@@ -103,9 +92,12 @@
       if (clearBtn) {
         clearBtn.addEventListener('click', function(){
           chat.clear();
-          showProactiveIfEmpty = true;
           messagesEl.innerHTML = '';
-          addMessage(PROACTIVE_MSG, 'left');
+          chat.start({ channel: 'embedded_widget' }).then(function(){
+            renderMessages(chat.getMessages());
+          }).catch(function(){
+            addMessage('Could not start chat. Please refresh the page.', 'left');
+          });
         });
       }
     })();
