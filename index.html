@@ -76,6 +76,28 @@
         addMessage('Could not start chat. Please refresh the page.', 'left');
       });
 
+      function endChatSession(sessionId){
+        if (!sessionId) return Promise.resolve();
+        return fetch(baseUrl + '/api/conversations/' + encodeURIComponent(sessionId) + '/close', {
+          method: 'POST',
+          credentials: 'include',
+          keepalive: true,
+        }).catch(function(){});
+      }
+
+      async function clearAndRestartChat(){
+        const sessionId = chat.getSessionId();
+        await endChatSession(sessionId);
+        chat.clear();
+        messagesEl.innerHTML = '';
+        try {
+          await chat.start({ channel: 'embedded_widget', forceNew: true });
+          renderMessages(chat.getMessages());
+        } catch (err) {
+          addMessage('Could not start chat. Please refresh the page.', 'left');
+        }
+      }
+
       form.addEventListener('submit', async function(e){
         e.preventDefault();
         const val = (input.value || '').trim();
@@ -91,13 +113,7 @@
 
       if (clearBtn) {
         clearBtn.addEventListener('click', function(){
-          chat.clear();
-          messagesEl.innerHTML = '';
-          chat.start({ channel: 'embedded_widget' }).then(function(){
-            renderMessages(chat.getMessages());
-          }).catch(function(){
-            addMessage('Could not start chat. Please refresh the page.', 'left');
-          });
+          void clearAndRestartChat();
         });
       }
     })();
